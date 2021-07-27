@@ -1,0 +1,3 @@
+include ':Perse'
+include ':app'
+rootProject.name = "PerseDemo"
