@@ -1,20 +1,30 @@
 package ai.cyberlabs.perse
 
-import ai.cyberlabs.perse.model.Detection
 import ai.cyberlabs.perse.model.HeadMovement
 import ai.cyberlabs.yoonit.camera.CameraView
 import ai.cyberlabs.yoonit.camera.interfaces.CameraEventListener
 import android.content.Context
+import android.util.AttributeSet
+import android.util.Log
 import android.util.Pair
 
-class PerseCamera(context: Context, apiKey: String): CameraView(context), CameraEventListener {
+class PerseCamera @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyle: Int = 0,
+    defStyleRes: Int = 0
+): CameraView(context,attrs, defStyle,defStyleRes), CameraEventListener {
 
-    var perseEventListener: PerseEventListener? = null
+    var eventListener: PerseEventListener? = null
 
-    val perse: Perse = Perse(apiKey)
-    val url: String = "https://api.stg.getperse.com/v0/"
+    var perse: Perse? = null
 
     init { this.configure() }
+
+    fun startPerse(apiKey: String, perseEventListener: PerseEventListener?) {
+        this.perse = Perse(apiKey)
+        this.eventListener = perseEventListener
+    }
 
     override fun onImageCaptured(
         type: String,
@@ -26,36 +36,32 @@ class PerseCamera(context: Context, apiKey: String): CameraView(context), Camera
         lightness: Double,
         sharpness: Double
     ) {
-        this.perseEventListener?.let { eventListener ->
-            this.perse.face.detect(
-                imagePath,
-                { detectResponse ->
-                    eventListener.onImageCaptured(
-                        count,
-                        total,
-                        imagePath,
-                        Detection(
-                                detectResponse.totalFaces,
-                                detectResponse.faces,
-                                detectResponse.imageMetrics,
-                                detectResponse.timeTaken,
-                                detectResponse.thresholds
+        this.eventListener?.let { eventListener ->
+            this.perse?.let {
+                it.face.detect(
+                    imagePath,
+                    { detectResponse ->
+                        eventListener.onImageCaptured(
+                            count,
+                            total,
+                            imagePath,
+                            detectResponse
                         )
-                    )
-                },
-                {
-
-                }
-            )
+                    },
+                    {
+                        Log.d("debug_error", it)
+                    }
+                )
+            }
         }
     }
 
     override fun onEndCapture() {
-        this.perseEventListener?.onEndCapture()
+        this.eventListener?.onEndCapture()
     }
 
     override fun onError(error: String) {
-        this.perseEventListener?.onError(error)
+        this.eventListener?.onError(error)
     }
 
     override fun onFaceDetected(
@@ -70,7 +76,7 @@ class PerseCamera(context: Context, apiKey: String): CameraView(context), Camera
         headEulerAngleY: Float,
         headEulerAngleZ: Float
     ) {
-        this.perseEventListener?.let { eventListener ->
+        this.eventListener?.let { eventListener ->
             var leftEye = false
             leftEyeOpenProbability?.let {
                 if (it > 0.8) {
@@ -114,19 +120,19 @@ class PerseCamera(context: Context, apiKey: String): CameraView(context), Camera
     }
 
     override fun onFaceUndetected() {
-        this.perseEventListener?.onFaceUndetected()
+        this.eventListener?.onFaceUndetected()
     }
 
     override fun onMessage(message: String) {
-        this.perseEventListener?.onMessage(message)
+        this.eventListener?.onMessage(message)
     }
 
     override fun onPermissionDenied() {
-        this.perseEventListener?.onPermissionDenied()
+        this.eventListener?.onPermissionDenied()
     }
 
     override fun onQRCodeScanned(content: String) {
-        this.perseEventListener?.onQRCodeScanned(content)
+        this.eventListener?.onQRCodeScanned(content)
     }
 
     private fun configure() {

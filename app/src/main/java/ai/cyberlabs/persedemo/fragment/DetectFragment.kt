@@ -1,6 +1,5 @@
 package ai.cyberlabs.persedemo.fragment
 
-import ai.cyberlabs.perse.model.Detection
 import ai.cyberlabs.persedemo.MainActivity
 import ai.cyberlabs.persedemo.R
 import ai.cyberlabs.persedemo.adapter.DetectAdapter
@@ -36,15 +35,7 @@ class DetectFragment: Fragment() {
                     val layoutManager = LinearLayoutManager(requireContext())
                     layoutManager.orientation = RecyclerView.VERTICAL
                     recycler_view.layoutManager = layoutManager
-                    adapter.setData(
-                        Detection(
-                            detectResponse.totalFaces,
-                            detectResponse.faces,
-                            detectResponse.imageMetrics,
-                            detectResponse.timeTaken,
-                            detectResponse.thresholds
-                        )
-                    )
+                    adapter.setData(detectResponse)
                 },
                 { error ->
                     Log.d("PERSE_TEST", error)

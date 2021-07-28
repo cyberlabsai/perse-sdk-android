@@ -1,7 +1,7 @@
 package ai.cyberlabs.persedemo.adapter
 
-import ai.cyberlabs.perse.model.Detection
 import ai.cyberlabs.persedemo.R
+import ai.cyberlabs.perselite.model.DetectResponse
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,12 +35,12 @@ class DetectAdapter: RecyclerView.Adapter<DetectAdapter.ViewHolder>() {
 
     override fun getItemCount(): Int = this.data.size
 
-    fun setData(detection: Detection) {
+    fun setData(detectResponse: DetectResponse) {
         val list: MutableList<Pair<String, String>> = ArrayList()
-        list.add(Pair("Detected Faces", detection.totalFaces.toString()))
+        list.add(Pair("Detected Faces", detectResponse.totalFaces.toString()))
 
         var i = 0
-        detection.faces.forEach { face ->
+        detectResponse.faces.forEach { face ->
             i++
             list.add(Pair("Face ".plus(i.toString()), ""))
             list.add(Pair("Liveness score", face.livenessScore.toString()))
@@ -54,9 +54,9 @@ class DetectAdapter: RecyclerView.Adapter<DetectAdapter.ViewHolder>() {
         }
 
         list.add(Pair("Image Metrics", ""))
-        list.add(Pair("Overexpose", detection.imageMetrics.overexpose.toString()))
-        list.add(Pair("Underexpose", detection.imageMetrics.underexpose.toString()))
-        list.add(Pair("Sharpness", detection.imageMetrics.sharpness.toString()))
+        list.add(Pair("Overexpose", detectResponse.imageMetrics.overexpose.toString()))
+        list.add(Pair("Underexpose", detectResponse.imageMetrics.underexpose.toString()))
+        list.add(Pair("Sharpness", detectResponse.imageMetrics.sharpness.toString()))
         this.data = list
         notifyDataSetChanged()
     }

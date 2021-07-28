@@ -1,7 +1,7 @@
 package ai.cyberlabs.perse
 
-import ai.cyberlabs.perse.model.Detection
 import ai.cyberlabs.perse.model.HeadMovement
+import ai.cyberlabs.perselite.model.DetectResponse
 
 interface PerseEventListener {
 
@@ -9,7 +9,7 @@ interface PerseEventListener {
         count: Int,
         total: Int,
         imagePath: String,
-        detection: Detection
+        detectResponse: DetectResponse
     )
 
     fun onFaceDetected(

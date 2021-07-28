@@ -44,4 +44,6 @@
     <string name="tilt_movement">Tilt Movement:</string>
     <string name="upload_label">Upload</string>
     <string name="camera_label">Camera</string>
+    <string name="open_label">Open</string>
+    <string name="close_label">Close</string>
 </resources>
