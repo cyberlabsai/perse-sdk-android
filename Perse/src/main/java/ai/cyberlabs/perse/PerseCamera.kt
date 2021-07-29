@@ -81,7 +81,7 @@ class PerseCamera @JvmOverloads constructor(
             leftEyeOpenProbability?.let {
                 if (it > 0.8) {
                     leftEye = true
-                    return
+                    return@let
                 }
                 leftEye = false
             }
@@ -90,7 +90,7 @@ class PerseCamera @JvmOverloads constructor(
             rightEyeOpenProbability?.let {
                 if (it > 0.8) {
                     rightEye = true
-                    return
+                    return@let
                 }
                 rightEye = false
             }
@@ -99,7 +99,7 @@ class PerseCamera @JvmOverloads constructor(
             smilingProbability?.let {
                 if (it > 0.8) {
                     smiling = true
-                    return
+                    return@let
                 }
                 smiling = false
             }

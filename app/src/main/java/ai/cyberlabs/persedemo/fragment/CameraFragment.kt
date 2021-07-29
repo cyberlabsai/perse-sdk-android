@@ -297,6 +297,7 @@ class CameraFragment: Fragment() {
                         "Super Right"
                     )
             }
+            else -> HeadMovement.UNDEFINED
         }
     }
 
@@ -337,6 +338,7 @@ class CameraFragment: Fragment() {
                         "Super Up"
                     )
             }
+            else -> HeadMovement.UNDEFINED
         }
     }
 
@@ -376,6 +378,7 @@ class CameraFragment: Fragment() {
                     "Super Left"
                 )
             }
+            else -> HeadMovement.UNDEFINED
         }
     }
 }
