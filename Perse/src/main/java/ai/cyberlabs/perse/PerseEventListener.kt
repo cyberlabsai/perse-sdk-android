@@ -1,8 +1,18 @@
+/**
+ * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * | PerseLite is lib for Android applications                       |
+ * | Haroldo Teruya & Victor Goulart @ Cyberlabs AI 2021             |
+ * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ */
+
 package ai.cyberlabs.perse
 
 import ai.cyberlabs.perse.model.HeadMovement
 import ai.cyberlabs.perselite.model.DetectResponse
 
+/**
+ * PerseCamera interface callbacks
+ */
 interface PerseEventListener {
 
     fun onImageCaptured(

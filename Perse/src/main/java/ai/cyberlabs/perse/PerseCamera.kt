@@ -1,3 +1,10 @@
+/**
+ * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * | PerseLite is lib for Android applications                       |
+ * | Haroldo Teruya & Victor Goulart @ Cyberlabs AI 2021             |
+ * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ */
+
 package ai.cyberlabs.perse
 
 import ai.cyberlabs.perse.model.HeadMovement
@@ -8,6 +15,9 @@ import android.util.AttributeSet
 import android.util.Log
 import android.util.Pair
 
+/**
+ * CameraView component integrated with YoonitCamera and PerseLite
+ */
 class PerseCamera @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,

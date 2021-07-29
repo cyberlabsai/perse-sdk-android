@@ -1,5 +1,15 @@
+/**
+ * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * | PerseLite is lib for Android applications                       |
+ * | Haroldo Teruya & Victor Goulart @ Cyberlabs AI 2021             |
+ * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ */
+
 package ai.cyberlabs.perse.model
 
+/**
+ * Enum class to represent the HeadMovement results
+ */
 enum class HeadMovement {
     UNDEFINED,
     VERTICAL_UP,
