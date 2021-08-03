@@ -1,6 +1,8 @@
 /**
  * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * | PerseLite is lib for Android applications                       |
+ * | Perse SDK Android.                                              |
+ * | More About: https://www.getperse.com/                           |
+ * | From CyberLabs.AI: https://cyberlabs.ai/                        |
  * | Haroldo Teruya & Victor Goulart @ Cyberlabs AI 2021             |
  * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  */

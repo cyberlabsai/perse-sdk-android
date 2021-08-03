@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <ai.cyberlabs.perse.PerseCamera
-        android:id="@+id/camera_view"
+        android:id="@+id/perse_camera"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"

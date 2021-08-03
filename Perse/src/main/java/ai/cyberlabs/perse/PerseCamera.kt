@@ -1,6 +1,8 @@
 /**
  * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * | PerseLite is lib for Android applications                       |
+ * | Perse SDK Android.                                              |
+ * | More About: https://www.getperse.com/                           |
+ * | From CyberLabs.AI: https://cyberlabs.ai/                        |
  * | Haroldo Teruya & Victor Goulart @ Cyberlabs AI 2021             |
  * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  */
@@ -16,7 +18,7 @@ import android.util.Log
 import android.util.Pair
 
 /**
- * CameraView component integrated with YoonitCamera and PerseLite
+ * CameraView component integrated with YoonitCamera and PerseLite.
  */
 class PerseCamera @JvmOverloads constructor(
     context: Context,

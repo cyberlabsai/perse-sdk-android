@@ -1,3 +1,5 @@
+<img src="https://raw.githubusercontent.com/cyberlabsai/perse-sdk-android/main/assets/logo_cyberlabs.png" width="300" />
+
 # Perse SDK Android
 From [CyberLabs.AI](https://cyberlabs.ai/).  
 _Ready to go biometric verification for the internet._

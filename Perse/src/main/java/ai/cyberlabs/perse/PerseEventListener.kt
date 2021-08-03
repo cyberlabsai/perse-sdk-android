@@ -1,6 +1,8 @@
 /**
  * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * | PerseLite is lib for Android applications                       |
+ * | Perse SDK Android.                                              |
+ * | More About: https://www.getperse.com/                           |
+ * | From CyberLabs.AI: https://cyberlabs.ai/                        |
  * | Haroldo Teruya & Victor Goulart @ Cyberlabs AI 2021             |
  * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  */
@@ -11,7 +13,7 @@ import ai.cyberlabs.perse.model.HeadMovement
 import ai.cyberlabs.perselite.model.DetectResponse
 
 /**
- * PerseCamera interface callbacks
+ * PerseCamera interface callbacks.
  */
 interface PerseEventListener {
 
