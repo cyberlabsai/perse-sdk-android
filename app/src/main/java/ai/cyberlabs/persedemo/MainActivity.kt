@@ -12,7 +12,7 @@ class MainActivity: AppCompatActivity() {
 
     val GALLERY_REQUEST_CODE = 100
 
-    val perse: Perse = Perse("")
+    val perse: Perse = Perse(BuildConfig.API_KEY)
 
     fun getResizedBitmap(image: Bitmap, maxSize: Int): Bitmap? {
         var width = image.width

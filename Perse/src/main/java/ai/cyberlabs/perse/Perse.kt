@@ -14,4 +14,7 @@ import ai.cyberlabs.perselite.PerseLite
 /**
  * Heritage of PerseLite main class.
  */
-class Perse(apiKey: String): PerseLite(apiKey)
+open class Perse(
+    apiKey: String,
+    baseUrl: String = BuildConfig.BASE_URL
+): PerseLite(apiKey, baseUrl)
