@@ -10,6 +10,7 @@
 package ai.cyberlabs.perse
 
 import ai.cyberlabs.perse.model.HeadMovement
+import ai.cyberlabs.perselite.PerseLite
 import ai.cyberlabs.yoonit.camera.CameraView
 import ai.cyberlabs.yoonit.camera.interfaces.CameraEventListener
 import android.content.Context
@@ -27,15 +28,28 @@ class PerseCamera @JvmOverloads constructor(
     defStyleRes: Int = 0
 ): CameraView(context,attrs, defStyle,defStyleRes), CameraEventListener {
 
-    var eventListener: PerseEventListener? = null
+    var apiKey: String? = null
+        set(value) {
+            value?.let {
+                this.perse = PerseLite(it, BuildConfig.BASE_URL)
+                field = value
+            }
+        }
 
-    var perse: Perse? = null
+    var perseEventListener: PerseEventListener? = null
+    private lateinit var perse: PerseLite
 
     init { this.configure() }
 
-    fun startPerse(apiKey: String, perseEventListener: PerseEventListener?) {
-        this.perse = Perse(apiKey)
-        this.eventListener = perseEventListener
+    private fun configure() {
+        this.setCameraEventListener(this)
+        this.startCaptureType("face")
+        this.setSaveImageCaptured(true)
+        this.setTimeBetweenImages(1000)
+        this.detectionTopSize = 0.2f
+        this.detectionRightSize = 0.2f
+        this.detectionBottomSize = 0.2f
+        this.detectionLeftSize = 0.2f
     }
 
     override fun onImageCaptured(
@@ -48,32 +62,41 @@ class PerseCamera @JvmOverloads constructor(
         lightness: Double,
         sharpness: Double
     ) {
-        this.eventListener?.let { eventListener ->
-            this.perse?.let {
-                it.face.detect(
+        this.perseEventListener?.let { perseEventListener ->
+            if (apiKey == null) {
+                Log.w(TAG, "No API Key set. To get a API Key: https://github.com/cyberlabsai/perse-sdk-android/wiki/2.-API-Key.")
+                perseEventListener.onImageCaptured(
+                    count,
+                    total,
                     imagePath,
-                    { detectResponse ->
-                        eventListener.onImageCaptured(
-                            count,
-                            total,
-                            imagePath,
-                            detectResponse
-                        )
-                    },
-                    {
-                        Log.d("debug_error", it)
-                    }
+                    null
                 )
+                return@let
             }
+
+            this.perse.face.detect(
+                imagePath,
+                { detectResponse ->
+                    perseEventListener.onImageCaptured(
+                        count,
+                        total,
+                        imagePath,
+                        detectResponse
+                    )
+                },
+                { error ->
+                    perseEventListener.onError(error)
+                }
+            )
         }
     }
 
     override fun onEndCapture() {
-        this.eventListener?.onEndCapture()
+        this.perseEventListener?.onEndCapture()
     }
 
     override fun onError(error: String) {
-        this.eventListener?.onError(error)
+        this.perseEventListener?.onError(error)
     }
 
     override fun onFaceDetected(
@@ -88,35 +111,23 @@ class PerseCamera @JvmOverloads constructor(
         headEulerAngleY: Float,
         headEulerAngleZ: Float
     ) {
-        this.eventListener?.let { eventListener ->
+        this.perseEventListener?.let { perseEventListener ->
             var leftEye = false
             leftEyeOpenProbability?.let {
-                if (it > 0.8) {
-                    leftEye = true
-                    return@let
-                }
-                leftEye = false
+                leftEye = it > 0.8
             }
 
             var rightEye = false
             rightEyeOpenProbability?.let {
-                if (it > 0.8) {
-                    rightEye = true
-                    return@let
-                }
-                rightEye = false
+                rightEye = it > 0.8
             }
 
             var smiling = false
             smilingProbability?.let {
-                if (it > 0.8) {
-                    smiling = true
-                    return@let
-                }
-                smiling = false
+                smiling = it > 0.8
             }
 
-            eventListener.onFaceDetected(
+            perseEventListener.onFaceDetected(
                 x,
                 y,
                 width,
@@ -132,26 +143,19 @@ class PerseCamera @JvmOverloads constructor(
     }
 
     override fun onFaceUndetected() {
-        this.eventListener?.onFaceUndetected()
+        this.perseEventListener?.onFaceUndetected()
     }
 
     override fun onMessage(message: String) {
-        this.eventListener?.onMessage(message)
+        this.perseEventListener?.onMessage(message)
     }
 
     override fun onPermissionDenied() {
-        this.eventListener?.onPermissionDenied()
+        this.perseEventListener?.onPermissionDenied()
     }
 
     override fun onQRCodeScanned(content: String) {
-        this.eventListener?.onQRCodeScanned(content)
-    }
-
-    private fun configure() {
-        this.setCameraEventListener(this)
-        this.setTimeBetweenImages(1000)
-        this.startCaptureType("face")
-        this.setSaveImageCaptured(true)
+        this.perseEventListener?.onQRCodeScanned(content)
     }
 
     private fun getHorizontal(headEulerAngleY: Float): HeadMovement {
@@ -185,5 +189,9 @@ class PerseCamera @JvmOverloads constructor(
             headEulerAngleZ > 36 -> HeadMovement.TILT_SUPER_LEFT
             else -> HeadMovement.UNDEFINED
         }
+    }
+
+    companion object {
+        const val TAG: String = "PerseCamera"
     }
 }

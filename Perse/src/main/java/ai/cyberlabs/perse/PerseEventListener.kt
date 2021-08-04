@@ -21,7 +21,7 @@ interface PerseEventListener {
         count: Int,
         total: Int,
         imagePath: String,
-        detectResponse: DetectResponse
+        detectResponse: DetectResponse?
     )
 
     fun onFaceDetected(
