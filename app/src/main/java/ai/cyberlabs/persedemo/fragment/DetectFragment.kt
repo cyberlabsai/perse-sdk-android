@@ -38,7 +38,7 @@ class DetectFragment: Fragment() {
                     adapter.setData(detectResponse)
                 },
                 { error ->
-                    Log.d("PERSE_TEST", error)
+                    Log.d("detect error:", error)
                 }
             )
         }

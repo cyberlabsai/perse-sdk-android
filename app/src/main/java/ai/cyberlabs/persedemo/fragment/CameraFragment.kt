@@ -1,6 +1,5 @@
 package ai.cyberlabs.persedemo.fragment
 
-import ai.cyberlabs.perse.PerseCamera
 import ai.cyberlabs.perse.PerseEventListener
 import ai.cyberlabs.perse.model.HeadMovement
 import ai.cyberlabs.persedemo.BuildConfig
@@ -27,20 +26,12 @@ class CameraFragment: Fragment() {
 
     private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
 
-    private lateinit var perseCamera: PerseCamera
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        buildCameraView()
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.camera_fragment, container, false)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        perseCamera.destroy()
     }
 
     override fun onResume() {
@@ -48,17 +39,19 @@ class CameraFragment: Fragment() {
         buildCameraView()
     }
 
+    override fun onPause() {
+        super.onPause()
+        perse_camera.destroy()
+    }
+
     private fun buildCameraView() {
-        perseCamera = camera_view
-        perseCamera.startPerse(BuildConfig.API_KEY, buildEventListener())
+        perse_camera.apiKey = BuildConfig.API_KEY
+        perse_camera.perseEventListener = buildEventListener()
 
         if (allPermissionsGranted()) {
-            perseCamera.startPreview()
-            perseCamera.startCaptureType("face")
-            perseCamera.setSaveImageCaptured(true)
-            perseCamera.setDetectionBox(true)
-            perseCamera.setFaceContours(true)
-            perseCamera.setSaveImageCaptured(true)
+            perse_camera.startPreview()
+            perse_camera.setDetectionBox(true)
+            perse_camera.setFaceContours(true)
             return
         }
 
@@ -81,9 +74,9 @@ class CameraFragment: Fragment() {
     ) {
         if (requestCode == PackageManager.PERMISSION_GRANTED) {
             if (allPermissionsGranted()) {
-                perseCamera.startPreview()
-                perseCamera.startCaptureType("frame")
-                perseCamera.setSaveImageCaptured(true)
+                perse_camera.startPreview()
+                perse_camera.setDetectionBox(true)
+                perse_camera.setFaceContours(true)
             } else {
                 Toast.makeText(
                     activity,
@@ -103,68 +96,84 @@ class CameraFragment: Fragment() {
             Log.d("OnError", error)
         }
 
-        override fun onImageCaptured(count: Int,
-                                     total: Int,
-                                     imagePath: String,
-                                     detectResponse: DetectResponse) {
-            setImageSharpness(detectResponse.imageMetrics.sharpness)
-            setImageUnderexpose(detectResponse.imageMetrics.underexpose)
-            setFaceSharpness(detectResponse.faces.first().faceMetrics.sharpness)
-            setFaceUnderexpose(detectResponse.faces.first().faceMetrics.underexpose)
-
-            detectResponse.let {
-                if (it.faces.first().livenessScore > 0.8) {
-                    perseCamera.setDetectionBoxColor(255,0,255,0)
-                    perseCamera.setFaceContoursColor(255,0,255,0)
-                    return@let
-                }
-                perseCamera.setDetectionBoxColor(255,255,0,0)
-                perseCamera.setFaceContoursColor(255,255,0,0)
-            }
-
-            image_preview.visibility = View.VISIBLE
+        override fun onImageCaptured(
+            count: Int,
+            total: Int,
+            imagePath: String,
+            detectResponse: DetectResponse?
+        ) {
             val imageFile = File(imagePath)
             if (imageFile.exists()) {
                 val imageBitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
                 image_preview.setImageBitmap(imageBitmap)
             }
+
+            detectResponse?.let { detectResponse ->
+                image_preview.visibility = View.VISIBLE
+
+                setImageSharpness(
+                    detectResponse.imageMetrics.sharpness,
+                    detectResponse.thresholds.sharpness
+                )
+                setImageUnderexpose(
+                    detectResponse.imageMetrics.underexposure,
+                    detectResponse.thresholds.underexposure
+                )
+                setFaceSharpness(
+                    detectResponse.faces.first().faceMetrics.sharpness,
+                    detectResponse.thresholds.sharpness
+                )
+                setFaceUnderexpose(
+                    detectResponse.faces.first().faceMetrics.underexposure,
+                    detectResponse.thresholds.underexposure
+                )
+
+                if (
+                    detectResponse
+                        .faces
+                        .first()
+                        .livenessScore > detectResponse.thresholds.liveness
+                ) {
+                    perse_camera.setDetectionBoxColor(255, 0, 255, 0)
+                    perse_camera.setFaceContoursColor(255, 0, 255, 0)
+                    return@let
+                }
+                perse_camera.setDetectionBoxColor(255, 255, 0, 0)
+                perse_camera.setFaceContoursColor(255, 255, 0, 0)
+            }
         }
 
-        override fun onFaceDetected(x: Int,
-                                    y: Int,
-                                    width: Int,
-                                    height: Int,
-                                    leftEyeOpen: Boolean,
-                                    rightEyeOpen: Boolean,
-                                    smiling: Boolean,
-                                    headVerticalMovement: HeadMovement,
-                                    headHorizontalMovement: HeadMovement,
-                                    headTiltMovement: HeadMovement) {
+        override fun onFaceDetected(
+            x: Int,
+            y: Int,
+            width: Int,
+            height: Int,
+            leftEyeOpen: Boolean,
+            rightEyeOpen: Boolean,
+            smiling: Boolean,
+            headVerticalMovement: HeadMovement,
+            headHorizontalMovement: HeadMovement,
+            headTiltMovement: HeadMovement
+        ) {
             leftEyeOpen.let {
                 if (it) {
-                    left_eye_tv.text = getString(R.string.open_label)
                     left_eye_tv.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_check,0,0,0)
                     return@let
                 }
-                left_eye_tv.text = getString(R.string.close_label)
                 left_eye_tv.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_off,0,0,0)
             }
             rightEyeOpen.let {
                 if (it) {
-                    right_eye_tv.text = getString(R.string.open_label)
                     right_eye_tv.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_check,0,0,0)
                     return@let
                 }
-                right_eye_tv.text = getString(R.string.close_label)
                 right_eye_tv.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_off,0,0,0)
             }
             smiling.let {
                 if (it) {
-                    smiling_tv.text = getString(R.string.open_label)
                     smiling_tv.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_check,0,0,0)
                     return@let
                 }
-                smiling_tv.text = getString(R.string.close_label)
                 smiling_tv.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_off,0,0,0)
             }
             setFaceHorizontalMovement(headHorizontalMovement)
@@ -173,8 +182,8 @@ class CameraFragment: Fragment() {
         }
 
         override fun onFaceUndetected() {
-            perseCamera.setDetectionBoxColor(0,0,0,0)
-            perseCamera.setFaceContoursColor(0,0,0,0)
+            perse_camera.setDetectionBoxColor(0,0,0,0)
+            perse_camera.setFaceContoursColor(0,0,0,0)
             left_eye_tv.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_neutral,0,0,0)
             right_eye_tv.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_neutral,0,0,0)
             smiling_tv.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_neutral,0,0,0)
@@ -208,52 +217,36 @@ class CameraFragment: Fragment() {
         }
     }
 
-    private fun setImageSharpness(sharpness: Float) {
-        image_sharpness_tv.text =
-            getString(
-                R.string.image_sharpness_probability,
-                sharpness.times(100).toString().substring(0,4)
-            )
-        if (sharpness < 0.5) {
+    private fun setImageSharpness(sharpness: Float, threshold: Float) {
+        image_sharpness_tv.text = getString(R.string.image_sharpness)
+        if (sharpness < threshold) {
             image_sharpness_tv.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_check,0,0,0)
             return
         }
         image_sharpness_tv.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_off,0,0,0)
     }
 
-    private fun setImageUnderexpose(underexpose: Float) {
-        image_underexpose_tv.text =
-            getString(
-                R.string.image_underexpose_probability,
-                underexpose.times(100).toString().substring(0,4)
-            )
-        if (underexpose < 0.5) {
+    private fun setImageUnderexpose(underexpose: Float, threshold: Float) {
+        image_underexpose_tv.text = getString(R.string.image_underexpose_probability)
+        if (underexpose < threshold) {
             image_underexpose_tv.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_check,0,0,0)
             return
         }
         image_underexpose_tv.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_off,0,0,0)
     }
 
-    private fun setFaceSharpness(sharpness: Float) {
-        face_sharpness_tv.text =
-            getString(
-                R.string.face_sharpness_probability,
-                sharpness.times(100).toString().substring(0,4)
-            )
-        if (sharpness < 0.5) {
+    private fun setFaceSharpness(sharpness: Float, threshold: Float) {
+        face_sharpness_tv.text = getString(R.string.face_sharpness)
+        if (sharpness < threshold) {
             face_sharpness_tv.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_check,0,0,0)
             return
         }
         face_sharpness_tv.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_off,0,0,0)
     }
 
-    private fun setFaceUnderexpose(underexpose: Float) {
-        face_underexpose_tv.text =
-            getString(
-                R.string.face_underexpose_probability,
-                underexpose.times(100).toString().substring(0,4)
-            )
-        if (underexpose < 0.5) {
+    private fun setFaceUnderexpose(underexpose: Float, threshold: Float) {
+        face_underexpose_tv.text = getString(R.string.face_underexpose_probability)
+        if (underexpose < threshold) {
             face_underexpose_tv.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_check,0,0,0)
             return
         }
