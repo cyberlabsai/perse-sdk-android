@@ -47,13 +47,11 @@ class DetectAdapter: RecyclerView.Adapter<DetectAdapter.ViewHolder>() {
             list.add(Pair("Bounding box", face.boundingBox.toString()))
 
             list.add(Pair("Face Metrics ".plus(i.toString()), ""))
-            list.add(Pair("Overexposure", face.faceMetrics.overexposure.toString()))
             list.add(Pair("Underexposure", face.faceMetrics.underexposure.toString()))
             list.add(Pair("Sharpness", face.faceMetrics.sharpness.toString()))
         }
 
         list.add(Pair("Image Metrics", ""))
-        list.add(Pair("Overexposure", detectResponse.imageMetrics.overexposure.toString()))
         list.add(Pair("Underexposure", detectResponse.imageMetrics.underexposure.toString()))
         list.add(Pair("Sharpness", detectResponse.imageMetrics.sharpness.toString()))
         this.data = list
