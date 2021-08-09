@@ -113,26 +113,26 @@ class CameraFragment: Fragment() {
 
                 setImageSharpness(
                     detectResponse.imageMetrics.sharpness,
-                    detectResponse.thresholds.sharpness
+                    detectResponse.defaultThresholds.sharpness
                 )
                 setImageUnderexposure(
                     detectResponse.imageMetrics.underexposure,
-                    detectResponse.thresholds.underexposure
+                    detectResponse.defaultThresholds.underexposure
                 )
                 setFaceSharpness(
                     detectResponse.faces.first().faceMetrics.sharpness,
-                    detectResponse.thresholds.sharpness
+                    detectResponse.defaultThresholds.sharpness
                 )
                 setFaceUnderexposure(
                     detectResponse.faces.first().faceMetrics.underexposure,
-                    detectResponse.thresholds.underexposure
+                    detectResponse.defaultThresholds.underexposure
                 )
 
                 if (
                     detectResponse
                         .faces
                         .first()
-                        .livenessScore > detectResponse.thresholds.liveness
+                        .livenessScore > detectResponse.defaultThresholds.liveness
                 ) {
                     perse_camera.setDetectionBoxColor(255, 0, 255, 0)
                     perse_camera.setFaceContoursColor(255, 0, 255, 0)
