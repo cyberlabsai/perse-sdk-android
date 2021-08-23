@@ -155,3 +155,97 @@ fun compareWithByteArray(
     )
     lock.await()
 }
+
+fun faceCreate(
+    context: Context,
+    resource: Int,
+    onSuccess: (PerseAPIResponse.Enrollment.Face.Create) -> Unit,
+    onError: (String) -> Unit
+) {
+    val lock = CountDownLatch(1)
+    val byteArray = getByteArray(context, resource)
+
+    Perse(BuildConfig.API_KEY).face.enrollment.create(
+        byteArray,
+        {
+            onSuccess(it)
+            lock.countDown()
+        },
+        {
+            onError(it)
+            lock.countDown()
+        }
+    )
+    lock.await()
+}
+
+fun faceRead(
+    onSuccess: (PerseAPIResponse.Enrollment.Face.Read) -> Unit,
+    onError: (String) -> Unit
+) {
+    val lock = CountDownLatch(1)
+
+    Perse(BuildConfig.API_KEY)
+        .face
+        .enrollment
+        .read(
+            {
+                onSuccess(it)
+                lock.countDown()
+            },
+            {
+                onError(it)
+                lock.countDown()
+            }
+        )
+    lock.await()
+}
+
+fun faceUpdate(
+    context: Context,
+    resource: Int,
+    userToken: String,
+    onSuccess: (PerseAPIResponse.Enrollment.Face.Update) -> Unit,
+    onError: (String) -> Unit
+) {
+    val lock = CountDownLatch(1)
+    val byteArray = getByteArray(context, resource)
+
+    Perse(BuildConfig.API_KEY).face.enrollment.update(
+        userToken,
+        byteArray,
+        {
+            onSuccess(it)
+            lock.countDown()
+        },
+        {
+            onError(it)
+            lock.countDown()
+        }
+    )
+    lock.await()
+}
+
+fun faceDelete(
+    userToken: String,
+    onSuccess: (PerseAPIResponse.Enrollment.Face.Delete) -> Unit,
+    onError: (String) -> Unit
+) {
+    val lock = CountDownLatch(1)
+
+    Perse(BuildConfig.API_KEY)
+        .face
+        .enrollment
+        .delete(
+            userToken,
+            {
+                onSuccess(it)
+                lock.countDown()
+            },
+            {
+                onError(it)
+                lock.countDown()
+            }
+        )
+    lock.await()
+}
