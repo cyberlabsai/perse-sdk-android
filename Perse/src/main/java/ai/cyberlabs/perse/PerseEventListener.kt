@@ -10,7 +10,6 @@
 package ai.cyberlabs.perse
 
 import ai.cyberlabs.perse.model.HeadMovement
-import ai.cyberlabs.perselite.model.DetectResponse
 
 /**
  * PerseCamera interface callbacks.
@@ -21,7 +20,7 @@ interface PerseEventListener {
         count: Int,
         total: Int,
         imagePath: String,
-        detectResponse: DetectResponse?
+        detectResponse: PerseAPIResponse.Face.Detect?
     )
 
     fun onFaceDetected(
