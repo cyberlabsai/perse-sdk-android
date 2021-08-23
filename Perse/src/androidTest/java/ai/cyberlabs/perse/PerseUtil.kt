@@ -1,7 +1,5 @@
 package ai.cyberlabs.perse
 
-import ai.cyberlabs.perselite.model.CompareResponse
-import ai.cyberlabs.perselite.model.DetectResponse
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -56,7 +54,7 @@ fun detectWithFile(
     context: Context,
     resource: Int,
     apiKey: String,
-    onSuccess: (DetectResponse) -> Unit,
+    onSuccess: (PerseAPIResponse.Face.Detect) -> Unit,
     onError: (String) -> Unit
 ) {
     val lock = CountDownLatch(1)
@@ -84,7 +82,7 @@ fun detectWithByteArray(
     context: Context,
     resource: Int,
     apiKey: String,
-    onSuccess: (DetectResponse) -> Unit,
+    onSuccess: (PerseAPIResponse.Face.Detect) -> Unit,
     onError: (String) -> Unit
 ) {
     val lock = CountDownLatch(1)
@@ -109,7 +107,7 @@ fun compareWithFile(
     resource1: Int,
     resource2: Int,
     apiKey: String,
-    onSuccess: (CompareResponse) -> Unit,
+    onSuccess: (PerseAPIResponse.Face.Compare) -> Unit,
     onError: (String) -> Unit
 ) {
     val lock = CountDownLatch(1)
@@ -136,7 +134,7 @@ fun compareWithByteArray(
     resource1: Int,
     resource2: Int,
     apiKey: String,
-    onSuccess: (CompareResponse) -> Unit,
+    onSuccess: (PerseAPIResponse.Face.Compare) -> Unit,
     onError: (String) -> Unit
 ) {
     val lock = CountDownLatch(1)
