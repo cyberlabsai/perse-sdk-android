@@ -5,7 +5,6 @@ import ai.cyberlabs.perse.model.HeadMovement
 import ai.cyberlabs.persedemo.BuildConfig
 import ai.cyberlabs.persedemo.MainActivity
 import ai.cyberlabs.persedemo.R
-import ai.cyberlabs.perselite.model.DetectResponse
 import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
@@ -100,7 +99,7 @@ class CameraFragment: Fragment() {
             count: Int,
             total: Int,
             imagePath: String,
-            detectResponse: DetectResponse?
+            detectResponse: PerseAPIResponse.Face.Detect?
         ) {
             val imageFile = File(imagePath)
             if (imageFile.exists()) {

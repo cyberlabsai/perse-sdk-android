@@ -3,7 +3,6 @@ package ai.cyberlabs.perse
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -59,7 +58,7 @@ class ComparePathTest {
             BuildConfig.API_KEY,
             { assertThat(false) },
             {
-                assertThat(it).isEqualTo("HTTP 400 ")
+                assertThat(it).isEqualTo("HTTP 402 ")
             }
         )
     }
@@ -75,18 +74,6 @@ class ComparePathTest {
             {
                 assertThat(it).isEqualTo("HTTP 402 ")
             }
-        )
-    }
-
-    @Test
-    fun test_with_invalid_api_key() {
-        compareWithFile(
-            this.context,
-            R.drawable.human_1,
-            R.drawable.human_2,
-            "xxxx",
-            { Assert.assertTrue(false) },
-            { assertThat(it).isEqualTo("HTTP 403 ") }
         )
     }
 }
